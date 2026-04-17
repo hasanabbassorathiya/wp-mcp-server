@@ -31,8 +31,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     { name: "get_comment_by_id", description: "Fetch comment by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
     { name: "get_tags", description: "Fetch tags", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
     { name: "get_categories", description: "Fetch categories", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
-    { name: "get_wc_customers", description: "Fetch customers (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
-    { name: "get_wc_product_variations", description: "Fetch product variations", inputSchema: { type: "object", properties: { url: { type: "string" }, product_id: { type: "number" } }, required: ["url", "product_id"] } },
+    { name: "get_coupons", description: "Fetch coupons (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
+    { name: "get_webhooks", description: "Fetch webhooks (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
+    { name: "get_shipping_methods", description: "Fetch shipping methods", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_taxes", description: "Fetch taxes", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_reports", description: "Fetch reports (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
+    { name: "get_settings", description: "Fetch settings (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
     { name: "get_post_by_id", description: "Fetch post by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
     { name: "create_post", description: "Create post (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" }, payload: { type: "object" } }, required: ["url", "token", "payload"] } },
     { name: "update_post", description: "Update post (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" }, id: { type: "number" }, payload: { type: "object" } }, required: ["url", "token", "id", "payload"] } },
@@ -78,6 +82,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "get_categories": validatedArgs = UrlSchema.parse(args); break;
       case "get_wc_customers": validatedArgs = AuthUrlSchema.parse(args); break;
       case "get_wc_product_variations": validatedArgs = UrlProductIdSchema.parse(args); break;
+      case "get_coupons": validatedArgs = AuthUrlSchema.parse(args); break;
+      case "get_webhooks": validatedArgs = AuthUrlSchema.parse(args); break;
+      case "get_shipping_methods": validatedArgs = UrlSchema.parse(args); break;
+      case "get_taxes": validatedArgs = UrlSchema.parse(args); break;
+      case "get_reports": validatedArgs = AuthUrlSchema.parse(args); break;
+      case "get_settings": validatedArgs = AuthUrlSchema.parse(args); break;
       case "create_wc_order": validatedArgs = AuthUrlPayloadSchema.parse(args); break;
       case "update_wc_order": validatedArgs = AuthUrlIdPayloadSchema.parse(args); break;
       case "delete_wc_order": validatedArgs = AuthUrlIdSchema.parse(args); break;
