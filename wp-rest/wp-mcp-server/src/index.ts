@@ -9,16 +9,30 @@ const server = new Server(
 );
 
 // Define tool schemas
+const UrlProductIdSchema = z.object({ url: z.string().url(), product_id: z.number().int() });
+const AuthUrlIdSchema = z.object({ url: z.string().url(), token: z.string(), id: z.number().int() });
+const AuthUrlSchema = z.object({ url: z.string().url(), token: z.string() });
 const UrlSchema = z.object({ url: z.string().url() });
 const UrlIdSchema = z.object({ url: z.string().url(), id: z.number().int() });
 const AuthUrlPayloadSchema = z.object({ url: z.string().url(), token: z.string(), payload: z.object({}).passthrough() });
 const AuthUrlIdPayloadSchema = z.object({ url: z.string().url(), token: z.string(), id: z.number().int(), payload: z.object({}).passthrough() });
-const AuthUrlIdSchema = z.object({ url: z.string().url(), token: z.string(), id: z.number().int() });
-const AuthUrlSchema = z.object({ url: z.string().url(), token: z.string() });
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
-    { name: "get_posts", description: "Fetch posts", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_pages", description: "Fetch pages", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_page_by_id", description: "Fetch page by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
+    { name: "get_taxonomies", description: "Fetch taxonomies", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_taxonomy_by_id", description: "Fetch taxonomy by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
+    { name: "get_media", description: "Fetch media", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_media_by_id", description: "Fetch media by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
+    { name: "get_users", description: "Fetch users", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
+    { name: "get_user_by_id", description: "Fetch user by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" }, id: { type: "number" } }, required: ["url", "token", "id"] } },
+    { name: "get_comments", description: "Fetch comments", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_comment_by_id", description: "Fetch comment by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
+    { name: "get_tags", description: "Fetch tags", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_categories", description: "Fetch categories", inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "get_wc_customers", description: "Fetch customers (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" } }, required: ["url", "token"] } },
+    { name: "get_wc_product_variations", description: "Fetch product variations", inputSchema: { type: "object", properties: { url: { type: "string" }, product_id: { type: "number" } }, required: ["url", "product_id"] } },
     { name: "get_post_by_id", description: "Fetch post by ID", inputSchema: { type: "object", properties: { url: { type: "string" }, id: { type: "number" } }, required: ["url", "id"] } },
     { name: "create_post", description: "Create post (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" }, payload: { type: "object" } }, required: ["url", "token", "payload"] } },
     { name: "update_post", description: "Update post (Auth)", inputSchema: { type: "object", properties: { url: { type: "string" }, token: { type: "string" }, id: { type: "number" }, payload: { type: "object" } }, required: ["url", "token", "id", "payload"] } },
@@ -50,7 +64,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "create_wc_product": validatedArgs = AuthUrlPayloadSchema.parse(args); break;
       case "update_wc_product": validatedArgs = AuthUrlIdPayloadSchema.parse(args); break;
       case "delete_wc_product": validatedArgs = AuthUrlIdSchema.parse(args); break;
-      case "get_wc_orders": validatedArgs = AuthUrlSchema.parse(args); break;
+      case "get_pages": validatedArgs = UrlSchema.parse(args); break;
+      case "get_page_by_id": validatedArgs = UrlIdSchema.parse(args); break;
+      case "get_taxonomies": validatedArgs = UrlSchema.parse(args); break;
+      case "get_taxonomy_by_id": validatedArgs = UrlIdSchema.parse(args); break;
+      case "get_media": validatedArgs = UrlSchema.parse(args); break;
+      case "get_media_by_id": validatedArgs = UrlIdSchema.parse(args); break;
+      case "get_users": validatedArgs = AuthUrlSchema.parse(args); break;
+      case "get_user_by_id": validatedArgs = AuthUrlIdSchema.parse(args); break;
+      case "get_comments": validatedArgs = UrlSchema.parse(args); break;
+      case "get_comment_by_id": validatedArgs = UrlIdSchema.parse(args); break;
+      case "get_tags": validatedArgs = UrlSchema.parse(args); break;
+      case "get_categories": validatedArgs = UrlSchema.parse(args); break;
+      case "get_wc_customers": validatedArgs = AuthUrlSchema.parse(args); break;
+      case "get_wc_product_variations": validatedArgs = UrlProductIdSchema.parse(args); break;
       case "create_wc_order": validatedArgs = AuthUrlPayloadSchema.parse(args); break;
       case "update_wc_order": validatedArgs = AuthUrlIdPayloadSchema.parse(args); break;
       case "delete_wc_order": validatedArgs = AuthUrlIdSchema.parse(args); break;
